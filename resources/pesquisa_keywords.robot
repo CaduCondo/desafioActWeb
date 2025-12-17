@@ -7,48 +7,42 @@ ${BROWSER}            chrome
 ${LUPA_PESQUISA}      id=search-open
 ${CAMPO_INPUT}        css:.ast-search-menu-icon.slide-search input.search-field
 ${BOTAO_FECHAR}       id=search-close
-${RODAPE}             id=colophon
+${RODAPE}             css:footer
 
 *** Keywords ***
 Abrir navegador
     ${options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
-    Run Keyword If    '${BROWSER}' == 'headlesschrome'    Call Method    ${options}    add_argument    --headless
     
+    # Configurações de estabilidade para CI
+    Run Keyword If    '${BROWSER}' == 'headlesschrome'    Call Method    ${options}    add_argument    --headless
     Call Method    ${options}    add_argument    --no-sandbox
     Call Method    ${options}    add_argument    --disable-dev-shm-usage
-    # Força a resolução Full HD para garantir que a lupa de Desktop apareça
     Call Method    ${options}    add_argument    --window-size\=1920,1080
-    # Desabilita a flag que avisa o site que é um robô
+    # Impede que o site identifique o robô e bloqueie o conteúdo
     Call Method    ${options}    add_argument    --disable-blink-features\=AutomationControlled
+    Call Method    ${options}    add_argument    --user-agent\=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
     
     Open Browser    ${URL}    ${BROWSER}    options=${options}
+    Set Selenium Timeout    30s
+
+Finalizar teste
+    Capture Page Screenshot
+    Close Browser
 
 Dado que acesso o blog do Agibank
     Go To    ${URL}
-    # Em vez de esperar só a página, esperamos um elemento que fica no final da página (Footer ou posts)
-    # Isso garante que o conteúdo carregou
-    Wait Until Page Contains Element    css:footer    timeout=30s
-    # Um pequeno scroll ajuda a "acordar" o carregamento preguiçoso (lazy loading)
-    Execute Javascript    window.scrollTo(0, 500)
-    Sleep    2s
+    # Espera o rodapé para garantir que a página carregou o conteúdo
+    Wait Until Page Contains Element    ${RODAPE}    timeout=30s
 
 Quando abro a pesquisa
-    # 1. Aguarda a página estabilizar
-    Wait Until Keyword Succeeds    3x    5s    Page Should Contain Element    xpath://a[contains(@class, 'search-field')]|id=search-open
-    
-    # 2. Tenta o clique via JavaScript usando múltiplos seletores comuns do tema
-    # Isso cobre tanto a versão desktop quanto possíveis variações do tema
-    Execute Javascript    
-    ...    var el = document.getElementById('search-open') || document.querySelector('.ast-search-menu-icon a');
-    ...    if(el) { el.click(); }
-
-    # 3. Aguarda o input aparecer
+    # Espera o elemento da lupa estar presente no código
+    Wait Until Element Is Present    ${LUPA_PESQUISA}    timeout=30s
+    # Scroll suave para garantir que o cabeçalho seja processado pelo navegador
+    Execute Javascript    window.scrollTo(0, 0)
+    # Clique via JS é o mais seguro para evitar erros de "Element not visible"
+    Execute Javascript    document.getElementById('search-open').click()
+    # Aguarda o campo de digitação aparecer
     Wait Until Element Is Visible    ${CAMPO_INPUT}    timeout=15s
-
-Finalizar teste
-    # Tira print sempre, conforme solicitado (sucesso ou falha)
-    Capture Page Screenshot
-    Close Browser
 
 E pesquiso por "${termo}"
     Input Text      ${CAMPO_INPUT}    ${termo}
