@@ -13,13 +13,13 @@ ${RODAPE}             css:footer
 Abrir navegador
     ${options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
     
-    # Sintaxe correta: passamos apenas o valor da string para o método add_argument
+    # CORREÇÃO DA SINTAXE: Passamos apenas o valor da string
     Run Keyword If    '${BROWSER}' == 'headlesschrome'    Call Method    ${options}    add_argument    --headless=new
     Call Method    ${options}    add_argument    --no-sandbox
     Call Method    ${options}    add_argument    --disable-dev-shm-usage
     Call Method    ${options}    add_argument    --window-size\=1920,1080
     
-    # Esconde a automação para evitar bloqueio do Agibank
+    # Bypass de detecção de robô
     Call Method    ${options}    add_argument    --disable-blink-features\=AutomationControlled
     Call Method    ${options}    add_experimental_option    excludeSwitches    ${{['enable-automation']}}
     Call Method    ${options}    add_argument    --user-agent\=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
@@ -28,23 +28,22 @@ Abrir navegador
     Set Selenium Timeout    30s
 
 Finalizar teste
-    # Como solicitado: tira screenshot sempre, independente de passar ou falhar
+    # Conforme solicitado: Screenshot em cada falha ou sucesso
     Capture Page Screenshot
     Close Browser
 
 Dado que acesso o blog do Agibank
     Go To    ${URL}
     Wait Until Page Contains Element    tag:body    timeout=30s
-    # Espera extra para garantir o carregamento do conteúdo dinâmico no CI
     Sleep    3s
 
 Quando abro a pesquisa
     Wait Until Page Contains Element    ${LUPA_PESQUISA}    timeout=30s
-    # Scroll para o topo e clique via JS (mais estável no GitHub Actions)
     Execute Javascript    window.scrollTo(0, 0)
+    # Clique via JS para ignorar bloqueios de visibilidade no modo headless
     Execute Javascript    document.getElementById('search-open').click()
     
-    # Espera o campo de busca aparecer após a animação
+    # Espera o campo aparecer após a animação de slide
     Wait Until Page Contains Element    ${CAMPO_INPUT}    timeout=15s
     Sleep    1s
 
