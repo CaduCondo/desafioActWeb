@@ -25,8 +25,6 @@ jobs:
           pip install robotframework robotframework-seleniumlibrary webdriver-manager
 
       - name: Run Robot Tests
-        # O ponto '.' busca os testes recursivamente. 
-        # Passamos a variável BROWSER para rodar em modo headless no servidor.
         run: |
           python -m robot -d results -v BROWSER:headlesschrome .
         continue-on-error: true

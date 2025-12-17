@@ -1,6 +1,7 @@
 *** Settings ***
 Documentation     Testes de funcionalidade do campo de pesquisa - Desafio Técnico
-Resource          ../resources/pesquisa_keywords.robot
+# Sobe dois níveis (sai de web, sai de tests) e entra em resources
+Resource          ../../resources/pesquisa_keywords.robot
 Test Setup        Abrir navegador
 Test Teardown     Finalizar teste
 
