@@ -25,8 +25,6 @@ jobs:
           pip install robotframework robotframework-seleniumlibrary webdriver-manager
 
       - name: Run Robot Tests
-        # Sem o continue-on-error, o GitHub lerá o exit code do Robot.
-        # Se houver falhas, o Job ficará VERMELHO, mas o Robot rodará os 4 cenários.
         run: |
           python -m robot -d results -v BROWSER:headlesschrome .
 
