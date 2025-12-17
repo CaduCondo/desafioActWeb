@@ -1,36 +1,57 @@
-# 🔍 Automação de Testes - Blog Agibank
+# 🚀 Desafio ACT - Automação Full Stack (Web & API)
 
-Este projeto contém a automação de testes para a funcionalidade de pesquisa do **Blog do Agibank**. O objetivo é validar a busca por termos válidos, inexistentes, caracteres especiais e o comportamento de fechamento do campo de busca.
-
-A solução foi desenvolvida utilizando **Robot Framework** e **SeleniumLibrary**, estruturada com o padrão de **Keywords** para facilitar a manutenção, legibilidade e reuso de código.
+Este repositório contém a solução do desafio técnico de automação, integrando testes de interface visual (Web) e testes de serviços (API) utilizando o framework **Robot Framework**.
 
 ---
 
-## 🚀 Tecnologias Utilizadas
+## 🛠️ Configuração e Requisitos
+### Pré-requisitos
+Python 3.10 ou superior.
+Navegador Google Chrome (para execução Web local).
 
-* **Linguagem:** Python 3.10+
-* **Framework:** Robot Framework
-* **Biblioteca de UI:** SeleniumLibrary
-* **CI/CD:** GitHub Actions
-* **Relatórios:** Robot Framework Logs (HTML) e GitHub Job Summary
 
----
+## 📂 Estrutura de Pastas
 
-## 🛠️ Configuração do Ambiente
+O projeto utiliza uma estrutura modular para separar as tecnologias e contextos de teste:
 
-O projeto é **multiplataforma**, sendo compatível com **Windows, Linux e macOS**.
+```text
+├── resources/           # Keywords e Variáveis (Lógica de Teste)
+│   ├── web/             # Recursos do Blog Agibank (Selenium)
+│   └── api/             # Recursos da Dog API (Requests)
+├── tests/               # Casos de Teste (Cenários BDD)
+│   ├── web/             # Automação de Interface (UI)
+│   └── api/             # Automação de Integração (API)
+├── results/             # Relatórios, Logs e Screenshots
+├── requirements.txt     # Dependências do projeto (Python)
+└── README.md            # Documentação principal
 
-### 1. Pré-requisitos
-* [Python 3.10+](https://www.python.org/downloads/) instalado e configurado no PATH.
-* Navegador **Google Chrome** instalado.
 
-### 2. Instalação
-Clone o repositório e instale as dependências necessárias utilizando o arquivo de requisitos:
+## 🌐 Projeto 01: Automação Web (Blog Agibank)
 
+**Objetivo:** Validar as funcionalidades de pesquisa no [Blog do Agibank](https://blogdoagi.com.br/).
+**Tecnologia:** Robot Framework + SeleniumLibrary.
+
+### O que é testado:
+* Pesquisa por termos válidos.
+* Pesquisa por termos com caracteres especiais.
+* Pesquisa por termos inexistentes (Fluxo de exceção).
+* Funcionalidade de abrir e fechar o campo de busca.
+
+### Como rodar apenas os testes Web:
 ```bash
-# Clonar o repositório
-git clone [https://github.com/SEU_USUARIO/desafioACT.git](https://github.com/SEU_USUARIO/desafioACT.git)
-cd desafioACT
+robot -d results -v BROWSER:chrome tests/web/
 
-# Instalar dependências
-pip install -r requirements.txt
+
+## 🌐 Projeto 02: Automação de API (Dog API)
+
+**Objetivo:** Validar o contrato e o funcionamento dos endpoints da Dog API.
+**Tecnologia:** Robot Framework + SeleniumLibrary.
+
+### Os Endpoints Testados:
+GET /breeds/list/all: Valida a listagem completa de todas as raças de cães.
+GET /breed/{breed}/images: Verifica se o endpoint retorna a lista de imagens de uma raça específica (ex: Hound).
+GET /breeds/image/random: Valida o fornecimento de uma imagem aleatória e se a URL retornada é válida.
+
+### Como rodar apenas os testes Web:
+```bash
+robot -d results tests/api/
