@@ -10,35 +10,39 @@ ${BOTAO_FECHAR}       id=search-close
 ${RODAPE}             css:footer
 
 *** Keywords ***
-*** Keywords ***
 Abrir navegador
     ${options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
-    Run Keyword If    '${BROWSER}' == 'headlesschrome'    Call Method    ${options}    add_argument    --headless
     
+    # Argumentos para parecer um usuário real e evitar bloqueios
+    Run Keyword If    '${BROWSER}' == 'headlesschrome'    Call Method    ${options}    add_argument    --headless=new
     Call Method    ${options}    add_argument    --no-sandbox
     Call Method    ${options}    add_argument    --disable-dev-shm-usage
     Call Method    ${options}    add_argument    --window-size\=1920,1080
     
-    # ESTES ARGUMENTOS SÃO CRICIAIS PARA SITES COM BLOQUEIO (WAF)
+    # Remove a flag "controlled by automated software"
     Call Method    ${options}    add_experimental_option    excludeSwitches    ${{['enable-automation']}}
+    Call Method    ${options}    add_experimental_option    useAutomationExtension    ${{False}}
     Call Method    ${options}    add_argument    --disable-blink-features\=AutomationControlled
+    
+    # User-agent de um Chrome estável e real
     Call Method    ${options}    add_argument    --user-agent\=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
     
     Open Browser    ${URL}    ${BROWSER}    options=${options}
     Set Selenium Timeout    30s
 
 Quando abro a pesquisa
-    # 1. Espera a lupa e clica via JS (já está funcionando)
-    Wait Until Page Contains Element    id=search-open    timeout=30s
-    Execute Javascript    document.getElementById('search-open').click()
+    # 1. Espera o corpo da página carregar
+    Wait Until Page Contains Element    tag:body    timeout=30s
+    Sleep    3s  # Tempo para o JS do blog carregar o header
     
-    # 2. Em vez de 'Wait Until Element Is Visible', usamos 'Contains Element'
-    # e damos um tempo para a animação do CSS terminar no modo headless
+    # 2. Tenta clicar via JS no ID e na Classe (um dos dois vai funcionar)
+    Execute Javascript    
+    ...    var lupa = document.getElementById('search-open') || document.querySelector('.ast-search-menu-icon a');
+    ...    if (lupa) { lupa.click(); }
+    
+    # 3. Aguarda o campo de busca aparecer
     Wait Until Page Contains Element    ${CAMPO_INPUT}    timeout=15s
-    Sleep    2s
-    
-    # 3. Força o foco no campo via JS para garantir que o Input Text funcione
-    Execute Javascript    document.querySelector('.ast-search-menu-icon.slide-search input.search-field').focus()
+    Sleep    5s
 
 Finalizar teste
     Capture Page Screenshot
