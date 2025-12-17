@@ -28,20 +28,17 @@ Abrir navegador
     Set Selenium Timeout    30s
 
 Quando abro a pesquisa
-    # 1. Espera a página carregar (pelo menos o body)
-    Wait Until Page Contains Element    tag:body    timeout=30s
+    # 1. Espera a lupa e clica via JS (já está funcionando)
+    Wait Until Page Contains Element    id=search-open    timeout=30s
+    Execute Javascript    document.getElementById('search-open').click()
     
-    # 2. Tenta clicar usando um seletor CSS de classe, que é mais estável que o ID no Agibank
-    # O seletor abaixo busca o link de pesquisa dentro da barra de menu
-    ${LUPA_CSS}    Set Variable    css:.ast-search-menu-icon a
+    # 2. Em vez de 'Wait Until Element Is Visible', usamos 'Contains Element'
+    # e damos um tempo para a animação do CSS terminar no modo headless
+    Wait Until Page Contains Element    ${CAMPO_INPUT}    timeout=15s
+    Sleep    2s
     
-    Wait Until Page Contains Element    ${LUPA_CSS}    timeout=30s
-    
-    # 3. Força o clique via JavaScript usando a classe
-    Execute Javascript    document.querySelector('.ast-search-menu-icon a').click()
-    
-    # 4. Aguarda o input aparecer
-    Wait Until Element Is Visible    ${CAMPO_INPUT}    timeout=15s
+    # 3. Força o foco no campo via JS para garantir que o Input Text funcione
+    Execute Javascript    document.querySelector('.ast-search-menu-icon.slide-search input.search-field').focus()
 
 Finalizar teste
     Capture Page Screenshot
