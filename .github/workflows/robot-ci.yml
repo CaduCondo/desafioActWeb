@@ -19,20 +19,16 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install Chrome and Driver
-        run: |
-          sudo apt-get update
-          sudo apt install google-chrome-stable
-
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install robotframework robotframework-seleniumlibrary webdrivermanager
+          pip install robotframework robotframework-seleniumlibrary webdriver-manager
 
       - name: Run Robot Tests
-        # Usamos o modo headless para rodar no servidor (sem interface gráfica)
+        # Apontamos para a pasta onde o arquivo está. 
+        # O Robot executará todos os arquivos .robot dentro dela.
         run: |
-          robot -d results -v BROWSER:headlesschrome src/test/robot/features/pesquisa.robot
+          python -m robot -d results -v BROWSER:headlesschrome src/tests/web/
         continue-on-error: true
 
       - name: Upload Test Results
