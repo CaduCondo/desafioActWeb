@@ -24,19 +24,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install robotframework robotframework-seleniumlibrary webdriver-manager
 
-      - name: List Repository Structure
-        # Este passo mostra no log a estrutura real das pastas caso o teste falhe
-        run: ls -R
-
       - name: Run Robot Tests
-        # Executamos apontando para a pasta 'src' de forma genérica.
-        # O Robot vai encontrar automaticamente seu arquivo .robot em src/tests/web/
+        # O ponto '.' diz ao Robot: "procure arquivos .robot em qualquer lugar deste projeto"
         run: |
-          python -m robot -d results -v BROWSER:headlesschrome src/
+          python -m robot -d results -v BROWSER:headlesschrome .
         continue-on-error: true
 
       - name: Upload Test Results
-        # Garante que os prints e relatórios sejam salvos mesmo em caso de falha
         if: always()
         uses: actions/upload-artifact@v4
         with:
