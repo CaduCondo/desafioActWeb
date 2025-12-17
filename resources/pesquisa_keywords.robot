@@ -12,19 +12,16 @@ ${RODAPE}             id=colophon
 *** Keywords ***
 Abrir navegador
     ${options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
-    
-    # Configurações essenciais para evitar o "bloqueio de página em branco" no CI
     Run Keyword If    '${BROWSER}' == 'headlesschrome'    Call Method    ${options}    add_argument    --headless
+    
     Call Method    ${options}    add_argument    --no-sandbox
     Call Method    ${options}    add_argument    --disable-dev-shm-usage
-    Call Method    ${options}    add_argument    --disable-gpu
+    # Força a resolução Full HD para garantir que a lupa de Desktop apareça
     Call Method    ${options}    add_argument    --window-size\=1920,1080
-    
-    # MUITO IMPORTANTE: Define um User-Agent real para o site carregar o conteúdo
-    Call Method    ${options}    add_argument    --user-agent\=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
+    # Desabilita a flag que avisa o site que é um robô
+    Call Method    ${options}    add_argument    --disable-blink-features\=AutomationControlled
     
     Open Browser    ${URL}    ${BROWSER}    options=${options}
-    Set Selenium Timeout    30s
 
 Dado que acesso o blog do Agibank
     Go To    ${URL}
@@ -36,10 +33,16 @@ Dado que acesso o blog do Agibank
     Sleep    2s
 
 Quando abro a pesquisa
-    # Se o ID falhar, tentamos clicar via seletor de classe que é mais estável no tema do Agibank
-    Wait Until Page Contains Element    id=search-open    timeout=30s
-    # Usamos o clique via JS que você já viu que funciona melhor no CI
-    Execute Javascript    document.getElementById('search-open').click()
+    # 1. Aguarda a página estabilizar
+    Wait Until Keyword Succeeds    3x    5s    Page Should Contain Element    xpath://a[contains(@class, 'search-field')]|id=search-open
+    
+    # 2. Tenta o clique via JavaScript usando múltiplos seletores comuns do tema
+    # Isso cobre tanto a versão desktop quanto possíveis variações do tema
+    Execute Javascript    
+    ...    var el = document.getElementById('search-open') || document.querySelector('.ast-search-menu-icon a');
+    ...    if(el) { el.click(); }
+
+    # 3. Aguarda o input aparecer
     Wait Until Element Is Visible    ${CAMPO_INPUT}    timeout=15s
 
 Finalizar teste
