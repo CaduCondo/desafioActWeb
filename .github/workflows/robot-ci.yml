@@ -25,15 +25,18 @@ jobs:
           pip install robotframework robotframework-seleniumlibrary webdriver-manager
 
       - name: Run Robot Tests
-        # Apontamos para a pasta onde o arquivo está. 
-        # O Robot executará todos os arquivos .robot dentro dela.
+        # O 'python -m robot' é mais seguro no CI
         run: |
           python -m robot -d results -v BROWSER:headlesschrome src/tests/web/
+        # continue-on-error permite que o workflow chegue até a etapa de upload
         continue-on-error: true
 
       - name: Upload Test Results
+        # 'always()' garante o upload mesmo se os testes falharem
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: robot-test-report
           path: results/
+          # Mantém os resultados por 5 dias
+          retention-days: 5
