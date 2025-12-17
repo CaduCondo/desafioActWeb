@@ -35,12 +35,15 @@ Dado que acesso o blog do Agibank
     Wait Until Page Contains Element    ${RODAPE}    timeout=30s
 
 Quando abro a pesquisa
-    # Espera o elemento da lupa estar presente no código
-    Wait Until Element Is Present    ${LUPA_PESQUISA}    timeout=30s
-    # Scroll suave para garantir que o cabeçalho seja processado pelo navegador
+    # O nome correto para a SeleniumLibrary é este abaixo:
+    Wait Until Page Contains Element    ${LUPA_PESQUISA}    timeout=30s
+    
+    # Scroll para o topo para garantir visibilidade do header
     Execute Javascript    window.scrollTo(0, 0)
-    # Clique via JS é o mais seguro para evitar erros de "Element not visible"
+    
+    # Clique via JS para evitar problemas de renderização no CI
     Execute Javascript    document.getElementById('search-open').click()
+    
     # Aguarda o campo de digitação aparecer
     Wait Until Element Is Visible    ${CAMPO_INPUT}    timeout=15s
 
