@@ -10,16 +10,20 @@ ${BOTAO_FECHAR}       id=search-close
 
 *** Keywords ***
 Abrir navegador
+    # Simplificação total para evitar erros de sintaxe Python
     ${options}=    Set Variable    add_argument("--headless"); add_argument("--no-sandbox"); add_argument("--disable-dev-shm-usage")
     Open Browser    ${URL}    ${BROWSER}    options=${options}
-    Set Selenium Window Size    1920    1080
+    # Nome correto da Keyword:
+    Set Window Size    1920    1080
 
 Finalizar teste
+    # [2025-12-17] Adiciona screenshot conforme solicitado
     Capture Page Screenshot
     Close Browser
 
 Dado que acesso o blog do Agibank
     Go To    ${URL}
+    # Espera apenas a página carregar o título para ser mais rápido
     Wait Until Page Contains    Agibank    timeout=30s
 
 Quando abro a pesquisa
