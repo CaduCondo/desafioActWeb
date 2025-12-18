@@ -23,29 +23,28 @@ Este repositório apresenta uma solução robusta para o desafio técnico de aut
 
 O projeto utiliza uma estrutura modular para separar as tecnologias e contextos de teste:
 
-text
-├── resources/           # Keywords e Variáveis (Lógica de Teste)
-│   ├── web/             # Recursos do Blog Agibank (Selenium)
-│   └── api/             # Recursos da Dog API (Requests)
-├── tests/               # Casos de Teste (Cenários BDD)
-│   ├── web/             # Automação de Interface (UI)
-│   └── api/             # Automação de Integração (API)
-├── results/             # Relatórios, Logs e Screenshots
-├── requirements.txt     # Dependências do projeto (Python)
-└── README.md            # Documentação principal
+|text|
+|├── resources/           # Keywords e Variáveis (Lógica de Teste)|
+|│   ├── web/             # Recursos do Blog Agibank (Selenium)|
+|│   └── api/             # Recursos da Dog API (Requests)|
+|├── tests/               # Casos de Teste (Cenários BDD)|
+|│   ├── web/             # Automação de Interface (UI)|
+|│   └── api/             # Automação de Integração (API)|
+|├── results/             # Relatórios, Logs e Screenshots|
+|├── requirements.txt     # Dependências do projeto (Python)|
+|└── README.md            # Documentação principal|
 
 
 ## 🌐 Projeto 01: Automação Web (Blog Agibank)
 
-Objetivo: Validar a resiliência e funcionalidade do sistema de busca do Blog do Agibank.
-Tecnologia: Robot Framework + SeleniumLibrary.
-Destaque: Captura automática de screenshots em cada cenário (Diretriz 17/12/2025).
+**Objetivo**: Validar a resiliência e funcionalidade do sistema de busca do Blog do Agibank.
+**Tecnologia**: Robot Framework + SeleniumLibrary.
 
-🧪 Cenários de Teste
-[x] Pesquisa por termos válidos: Garante o retorno de artigos existentes.
-[x] Pesquisa por caracteres especiais: Valida a segurança e tratamento do input.
-[x] Pesquisa por termos inexistentes: Valida a mensagem de "Nada encontrado".
-[x] Interação UI: Valida o comportamento de abertura e fechamento do campo de busca.
+|🧪 **Cenários de Teste**|
+|[x] Pesquisa por termos válidos: Garante o retorno de artigos existentes.|
+|[x] Pesquisa por caracteres especiais: Valida a segurança e tratamento do input.|
+|[x] Pesquisa por termos inexistentes: Valida a mensagem de "Nada encontrado".|
+|[x] Interação UI: Valida o comportamento de abertura e fechamento do campo de busca.|
 
 ### Como rodar os testes:
 bash
@@ -55,5 +54,5 @@ robot -d results .
 ## 📊 Resultados e Evidências
 Após a execução, os artefatos estarão disponíveis na pasta /results:
 
-report.html: Visão executiva dos testes.
-log.html: Detalhamento técnico e screenshots de cada passo.
+**report.html**: Visão executiva dos testes.
+**log.html**: Detalhamento técnico e screenshots de cada passo.
