@@ -8,7 +8,7 @@ Test Teardown     Finalizar teste
 Cenário: Pesquisar por um termo válido
     Dado que acesso o blog do Agibank
     Quando abro a pesquisa
-    E pesquiso por "Agibank"
+    E pesquiso por "INSS"
     Então devo visualizar a página de resultados de busca
 
 Cenário: Pesquisar por termo com caracteres especiais

@@ -4,26 +4,33 @@ Library    SeleniumLibrary
 *** Variables ***
 ${URL}                https://blogdoagi.com.br/
 ${BROWSER}            chrome
-${LUPA_PESQUISA}      id=search-open
+${LUPA_PESQUISA}      css:.ast-search-menu-icon
 ${CAMPO_INPUT}        css:input.search-field
 ${BOTAO_FECHAR}       id=search-close
 
 *** Keywords ***
 Abrir navegador
-    # Simplificação total para evitar erros de sintaxe Python
-    ${options}=    Set Variable    add_argument("--headless"); add_argument("--no-sandbox"); add_argument("--disable-dev-shm-usage")
-    Open Browser    ${URL}    ${BROWSER}    options=${options}
-    # Nome correto da Keyword:
-    Set Window Size    1920    1080
+    ${options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys
+    
+    # Usamos o Call Method passando apenas a variável sem atribuir nomes
+    Call Method    ${options}    add_argument    --disable-blink-features\=AutomationControlled
+    Call Method    ${options}    add_argument    --no-sandbox
+    Call Method    ${options}    add_argument    --disable-dev-shm-usage
+    
+    IF    '${BROWSER}' == 'headlesschrome'
+        Call Method    ${options}    add_argument    --headless
+    END
 
-Finalizar teste
-    # [2025-12-17] Adiciona screenshot conforme solicitado
+    Open Browser    ${URL}    ${BROWSER}    options=${options}
+    Maximize Browser Window
+    Set Selenium Timeout    30 seconds
+
+Finalizar Teste
     Capture Page Screenshot
     Close Browser
 
 Dado que acesso o blog do Agibank
     Go To    ${URL}
-    # Espera apenas a página carregar o título para ser mais rápido
     Wait Until Page Contains    Agibank    timeout=30s
 
 Quando abro a pesquisa

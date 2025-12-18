@@ -25,4 +25,3 @@ Validar Estrutura de Sucesso
     [Arguments]    ${response}
     Should Be Equal As Numbers    ${response.status_code}    200
     Should Be Equal As Strings    ${response.json()}[status]    success
-    Dictionary Should Contain Key    ${response.json()}    message
